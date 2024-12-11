@@ -11,6 +11,7 @@ class ListaHorizontal extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.all(8.0),
         
+        
         children:[
           
           const SizedBox(
@@ -20,7 +21,6 @@ class ListaHorizontal extends StatelessWidget {
             Column(
             children: [
               Container(
-                
                 margin: const EdgeInsets.only(top: 50, left: 20),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(300),
