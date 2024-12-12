@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:starwhat/models/people_response/people_response.dart';
 import 'package:http/http.dart' as http;
 
