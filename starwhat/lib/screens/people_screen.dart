@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:starwhat/models/people_response/people_response.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,19 +23,25 @@ class _PeopleScreenState extends State<PeopleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(Colors.black.value),
+        backgroundColor: Color(const Color.fromARGB(255, 240, 240, 240).value),
         title: Row(
           children: [
-            Image.network(
-              'https://img.icons8.com/color/512/star-wars.png', // Ruta de la imagen del logo
-              height: 60, // Ajusta la altura del logo
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Image.network(
+                'https://img.icons8.com/color/512/star-wars.png',
+                height: 60,
+              ),
             ),
             const SizedBox(width: 10),
-            const Text('People', style: TextStyle(color: Colors.white)),
+            const Padding(
+              padding: EdgeInsets.only(left: 50),
+              child: Text('People'),
+            ),
           ],
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: FutureBuilder<PeopleResponse>(
         future: peopleResponse,
         builder: (context, snapshot) {
@@ -62,50 +69,74 @@ class _PeopleScreenState extends State<PeopleScreen> {
   }
 
   Widget _buildPeopleList(PeopleResponse peopleResponse) {
-  return ListView.builder(
-    itemCount: peopleResponse.results!.length,
-    itemBuilder: (context, index) {
-      return Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        color: const Color.fromARGB(255, 50, 50, 50),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Image(
-                  image: NetworkImage('https://starwars-visualguide.com/assets/img/characters/${index + 1}.jpg'),
-                  width: 180,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 180,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Nombre: ${peopleResponse.results![index].name}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                      Text(
-                        "Altura: ${peopleResponse.results![index].height}", style: const TextStyle(color: Colors.white),
-                      ),
-                      Text("Genero: ${peopleResponse.results![index].gender}", style: const TextStyle(color: Colors.white),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
+return GridView.builder(
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      childAspectRatio: 0.70,
+
+    ),
+   itemCount: peopleResponse.results!.length,
+   itemBuilder: (context, index) {
+     return Card(
+       margin: const EdgeInsets.all(10),
+       shape: RoundedRectangleBorder(
+         borderRadius: BorderRadius.circular(10),
+       ),
+       color: const Color.fromARGB(255, 214, 214, 214),
+       child: Stack(
+         children: [
+           ClipRRect(
+             borderRadius: BorderRadius.circular(10),
+             child: Image(
+               image: NetworkImage('https://starwars-visualguide.com/assets/img/characters/${index + 1}.jpg'),
+               width: 500,
+               height: 350,
+              fit: BoxFit.cover,
+             ),
+           ),
+           Positioned(
+             bottom: 0,
+             left: 0,
+             right: 0,
+             child: Container(
+               padding: const EdgeInsets.all(5),
+               decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+                 borderRadius: const BorderRadius.only(
+                   bottomLeft: Radius.circular(10),
+                   bottomRight: Radius.circular(10),
+                 ),
+               ),
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                     "Nombre: ${peopleResponse.results![index].name}",
+                     style: const TextStyle(
+                       fontWeight: FontWeight.bold,
+                       color: Colors.white,
+                     ),
+                   ),
+                   Text(
+                     "Altura: ${peopleResponse.results![index].height}",
+                     style: const TextStyle(color: Colors.white),
+                   ),
+                   Text(
+                     "Genero: ${peopleResponse.results![index].gender}",
+                     style: const TextStyle(color: Colors.white),
+                   ),
+                   Text(
+                     "Peso: ${peopleResponse.results![index].mass} Kg",
+                     style: const TextStyle(color: Colors.white),
+                   ),
+                 ],
+               ),
+             ),
+           ),
+         ],
+       ),
+     );
+   },
+);
+  }
 }
