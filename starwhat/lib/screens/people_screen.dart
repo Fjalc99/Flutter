@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:starwhat/models/people_response/people.dart';
 import 'package:starwhat/models/people_response/people_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:starwhat/screens/people_detail_screen.dart';
+
 
 class PeopleScreen extends StatefulWidget {
   const PeopleScreen({super.key});
@@ -45,7 +48,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         future: peopleResponse,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return _buildPeopleList(snapshot.data!);
+            return _buildPeopleList(context, snapshot.data!);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
@@ -67,7 +70,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
     }
   }
 
-  Widget _buildPeopleList(PeopleResponse peopleResponse) {
+  Widget _buildPeopleList(BuildContext context, PeopleResponse peopleResponse) {
 return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -76,66 +79,70 @@ return GridView.builder(
     ),
    itemCount: peopleResponse.results!.length,
    itemBuilder: (context, index) {
-     return Card(
-       margin: const EdgeInsets.all(10),
-       shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(10),
-       ),
-       color: const Color.fromARGB(255, 214, 214, 214),
-       child: Stack(
-         children: [
-           ClipRRect(
-             borderRadius: BorderRadius.circular(10),
-             child: Image(
-               image: NetworkImage('https://starwars-visualguide.com/assets/img/characters/${index + 1}.jpg'),
-               width: 500,
-               height: 350,
-              fit: BoxFit.cover,
-             ),
-           ),
-           Positioned(
-             bottom: 0,
-             left: 0,
-             right: 0,
-             child: Container(
-               padding: const EdgeInsets.all(5),
-               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
-                 borderRadius: const BorderRadius.only(
-                   bottomLeft: Radius.circular(10),
-                   bottomRight: Radius.circular(10),
-                 ),
-               ),
-               child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: [
-                   Text(
-                     "Nombre: ${peopleResponse.results![index].name}",
-                     style: const TextStyle(
-                       fontWeight: FontWeight.bold,
-                       color: Colors.white,
-                     ),
-                   ),
-                   Text(
-                     "Altura: ${peopleResponse.results![index].height}",
-                     style: const TextStyle(color: Colors.white),
-                   ),
-                   Text(
-                     "Genero: ${peopleResponse.results![index].gender}",
-                     style: const TextStyle(color: Colors.white),
-                   ),
-                   Text(
-                     "Peso: ${peopleResponse.results![index].mass} Kg",
-                     style: const TextStyle(color: Colors.white),
-                   ),
-                 ],
-               ),
-             ),
-           ),
-         ],
-       ),
-     );
+      return _buildPeopleItem(context, peopleResponse.results![index], index);
+    
    },
 );
+  }
+
+  Widget _buildPeopleItem(BuildContext context, People people, int index) {
+    
+   return GestureDetector(
+      onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PeopleDetailScreen(peopleItem: people),
+            ),
+          );
+        },
+
+     child: Card(
+         margin: const EdgeInsets.all(10),
+         shape: RoundedRectangleBorder(
+           borderRadius: BorderRadius.circular(10),
+         ),
+         color: const Color.fromARGB(255, 214, 214, 214),
+         child: Stack(
+           children: [
+             ClipRRect(
+               borderRadius: BorderRadius.circular(10),
+               child: Image(
+                 image: NetworkImage('https://starwars-visualguide.com/assets/img/characters/${index + 1}.jpg'),
+                 width: 500,
+                 height: 350,
+                fit: BoxFit.cover,
+               ),
+             ),
+             Positioned(
+               bottom: 0,
+               left: 0,
+               right: 0,
+               child: Container(
+                 padding: const EdgeInsets.all(5),
+                 decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                   borderRadius: const BorderRadius.only(
+                     bottomLeft: Radius.circular(10),
+                     bottomRight: Radius.circular(10),
+                   ),
+                 ),
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Text(
+                       "Nombre: ${people.name}",
+                       style: const TextStyle(
+                         fontWeight: FontWeight.bold,
+                         color: Colors.white,
+                       ),
+                      ),
+                   ],
+                 ),
+               ),
+             ),
+           ],
+         ),
+       ),
+   );
   }
 }
